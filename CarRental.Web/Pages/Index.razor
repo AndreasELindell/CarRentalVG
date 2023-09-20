@@ -1,0 +1,122 @@
+﻿@page "/"
+@using CarRental.Business.Services;
+@inject CarRentalService service
+
+<PageTitle>Car Rental</PageTitle>
+
+<h1>Welcome to Car Rental Service!</h1>
+
+
+<div class="row w-50">
+	<table class="table" title="Cars">
+		<thead>
+			<tr>
+				<th scope="col">RegNo</th>
+				<th scope="col">Make</th>
+				<th scope="col">Odometer</th>
+				<th scope="col">Cost Per KM</th>
+				<th scope="col">Cost Per Day</th>
+				<th scope="col">Vehicle Type</th>
+				<th scope="col">Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var vehicle in service.GetVehicles())
+			{
+				<tr>
+					<td>@vehicle.RegNo</td>
+					<td>@vehicle.Make</td>
+					<td>@vehicle.Odometer KM</td>
+					<td>@vehicle.CostKM $</td>
+					<td>@vehicle.CostPerDay $</td>
+					<td>@vehicle.VehicleType</td>
+					@if(vehicle.VehicleStatus == Common.Enums.VehicleStatuses.Available)
+					{
+						<td class="badge bg-success" style="margin-top: 0.5em">
+							@vehicle.VehicleStatus
+						</td>
+					}
+					else
+					{
+						<td class="badge bg-danger" style=" margin-top: 0.5em">
+							@vehicle.VehicleStatus</td>
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<div class="row w-25">
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">SSN</th>
+				<th scope="col">First Name</th>
+				<th scope="col">Last Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var customer in service.GetPeople())
+			{
+				<tr>
+					<td>@customer.SSN</td>
+					<td>@customer.FirstName</td>
+					<td>@customer.LastName</td>
+
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<div class="row w-50">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Vehicle</th>
+				<th>Rented by</th>
+				<th>Rented KM</th>
+				<th>Returnd KM</th>
+				<th>Rented</th>
+				<th>Returnd</th>
+				<th>Cost</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var booking in service.GetBookings())
+			{
+				<tr>
+					<td>@booking.Vehicle.RegNo @booking.Vehicle.Make</td>
+					<td>@booking.RentedBy.FirstName @booking.RentedBy.LastName</td>
+					<td>@booking.KMrented KM</td>
+					<td>@booking.KMreturned KM</td>
+					<td>@booking.Start.ToString("yyyy-MM-dd")</td>
+					<td>
+						@if(booking.End != default)
+						{
+							@booking.End.ToString("yyyy-MM-dd")
+						}
+					</td>
+					<td>
+						@if (booking.Cost != 0)
+						{
+							@booking.Cost <span>$</span>
+						}
+					</td>
+					@if (booking.Status == Common.Enums.BookingStatus.Open)
+					{
+						<td class="badge bg-dark" style="margin-top: 0.5em">
+							@booking.Status
+						</td>
+					}
+					else
+					{
+						<td class="badge bg-danger" style=" margin-top: 0.5em">
+							@booking.Status
+						</td>
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
