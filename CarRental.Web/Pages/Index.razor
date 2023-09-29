@@ -6,16 +6,16 @@
 @inject CarRentalService service
 
 <PageTitle>Car Rental</PageTitle>
-<div style="@errorShow">
+<div style="@service.errorShow">
 	<div class="alert alert-danger" role="alert">
-		@errorMessage
+		@service.errorMessage
 	</div>
 </div>
 <h1>Welcome to Car Rental Service!</h1>
 
 <!-- Cars Table -->
 <div class="row w-100">
-	<div style="@LockTable">
+	<div style="@service.LockTable">
 	<table class="table" title="Cars">
 		<thead>
 			<tr>
@@ -32,21 +32,21 @@
 
 		<tbody>
 			<tr>
-				<td><input class="form-control" placeholder="RegNo" @bind="RegNo" /></td>
-				<td><input class="form-control" placeholder="Make" @bind="Make" /></td>
-				<td><input class="form-control" placeholder="Odometer" @bind="Odometer" /></td>
-				<td><input class="form-control" placeholder="Cost per Km" @bind="CostKM" /></td>
-				<td><input class="form-control" placeholder="Cost Per day" @bind="CostPerDay" /></td>
+					<td><input class="form-control" placeholder="RegNo" @bind="service.RegNo" /></td>
+					<td><input class="form-control" placeholder="Make" @bind="service.Make" /></td>
+					<td><input class="form-control" placeholder="Odometer" @bind="service.Odometer" /></td>
+					<td><input class="form-control" placeholder="Cost per Km" @bind="service.CostKM" /></td>
+					<td><input class="form-control" placeholder="Cost Per day" @bind="service.CostPerDay" /></td>
 				<td>
-					<select @bind="type">
+						<select @bind="service.type">
 						@foreach(var item in Enum.GetNames(typeof(VehicleTypes)))
 						{
 							<option>@item</option>
 						}
 					</select>
 				</td>
-					<td><button class="btn-outline-primary" @onclick="() => CheckInputAddVehicle()">Add</button></td>
-				<td class="badge bg-warning" style="margin-top: 0.5em; @taskLoading">
+					<td><button class="btn-outline-primary" @onclick="() => service.CheckInputAddVehicle()">Add</button></td>
+					<td class="badge bg-warning" style="margin-top: 0.5em; @service.taskLoading">
 					Processing...
 				</td>
 			</tr>
@@ -63,13 +63,13 @@
 					{
 						<td class="col-sm-3">
 							<div class="input-group">
-								<select @bind="customerId" class="form-select form-select-sm" >
+									<select @bind="service.customerId" class="form-select form-select-sm">
 									@foreach (var customer in service.GetPeople())
 									{
 										<option selected value="@customer.Id">@customer.FirstName @customer.LastName</option>
 									}
 								</select>
-								<button class="btn-outline-success" @onclick="(() => FakeDelayRentCar(vehicle))">Rent</button>
+									<button class="btn-outline-success" @onclick="(() => service.FakeDelayRentCar(vehicle))">Rent</button>
 							</div>
 						</td>
 						<td class="badge bg-success" style="margin-top: 0.5em">
@@ -79,8 +79,8 @@
 					else
 					{
 						<td>
-							<input @bind="addedKM" placeholder="KM Returned" />
-							<button class="btn-outline-secondary" @onclick="(() => FakeDelayReturnCar(vehicle))">Return</button>
+								<input @bind="service.addedKM" placeholder="KM Returned" />
+							<button class="btn-outline-secondary" @onclick="(() => service.FakeDelayReturnCar(vehicle))">Return</button>
 						</td>
 						<td class="badge bg-danger" style=" margin-top: 0.5em">
 							@vehicle.VehicleStatus
@@ -104,10 +104,10 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td><input class="form-control" placeholder="SSN" @bind="newCustomer.SSN" /></td>
-				<td><input class="form-control" placeholder="First Name" @bind="newCustomer.FirstName" /></td>
-				<td><input class="form-control" placeholder="Last Name" @bind="newCustomer.LastName" /></td>
-				<td><button class="btn-outline-primary" @onclick="() => CheckInputAddPerson()">Add</button></td>
+				<td><input class="form-control" placeholder="SSN" @bind="service.newCustomer.SSN" /></td>
+				<td><input class="form-control" placeholder="First Name" @bind="service.newCustomer.FirstName" /></td>
+				<td><input class="form-control" placeholder="Last Name" @bind="service.newCustomer.LastName" /></td>
+				<td><button class="btn-outline-primary" @onclick="() => service.CheckInputAddPerson()">Add</button></td>
 			</tr>
 			@foreach (var customer in service.GetPeople())
 			{
@@ -168,106 +168,3 @@
 		</tbody>
 	</table>
 </div>
-@code
-{
-	//Processiong Booking
-	private bool isLoading = false;
-	private string taskLoading => isLoading ? "display: block;" : "display: none;";
-	private string LockTable => isLoading ? "pointer-events: none; opacity: 0.5; filter: grayscale(50%);" : "pointer-events: default; opacity: default; filter: default";
-
-	//Input Error
-	private bool error = false;
-	private string errorShow => error ? "display: block;" : "display: none;";
-	private string? errorMessage;
-
-	//New Car properties
-	private string? RegNo;
-	private string? Make;
-	private int Odometer;
-	private int CostKM;
-	private int CostPerDay;
-	private Common.Enums.VehicleTypes type;
-
-	//New Costumer
-	private Customer newCustomer = new();
-
-	//Parameters for closing booking
-	private int addedKM;
-	private int customerId;
-
-	private async Task CheckInputAddPerson()
-	{
-		if (!(String.IsNullOrEmpty(newCustomer.FirstName) && String.IsNullOrEmpty(newCustomer.LastName)) && newCustomer.SSN > 0)
-		{
-			error = false;
-			service.AddPerson(newCustomer);
-		}
-		else
-		{
-			error = true;
-			errorMessage = "You need all Person fields to be valid";
-			await Task.Delay(TimeSpan.FromSeconds(5));
-			error = false;
-		}
-	}
-
-	private async Task CheckInputAddVehicle()
-	{
-		if (!(String.IsNullOrEmpty(RegNo) && String.IsNullOrEmpty(Make)) && CostKM > 0 && CostPerDay > 0)
-		{
-			error = false;
-			service.AddVehicle(RegNo.ToUpper(), Char.ToUpper(Make.First()) + Make.Substring(1).ToLower(), Odometer, CostKM, CostPerDay, type);
-		}
-		else
-		{
-			error = true;
-			errorMessage = "You need all Vehicle fields to be valid";
-			await Task.Delay(TimeSpan.FromSeconds(5));
-			error = false;
-		}
-	}
-
-	private async Task FakeDelayRentCar(IVehicle vehicle)
-	{
-		if (customerId < 1)
-		{
-			error = true;
-			errorMessage = "You need a valid customer to rent a car!";
-			await Task.Delay(TimeSpan.FromSeconds(5));
-			error = false;
-		}
-		if (!isLoading)
-		{
-			isLoading = true;
-			await Task.Delay(TimeSpan.FromSeconds(5));
-			await service.RentcarAsync(vehicle, customerId);
-
-			customerId = 0;
-			isLoading = false;
-		}
-	}
-
-	private async Task FakeDelayReturnCar(IVehicle vehicle)
-	{
-		if (!isLoading)
-		{
-			try
-			{
-				isLoading = true;
-				await Task.Delay(TimeSpan.FromSeconds(2));
-				await service.ReturnCarAsync(vehicle, addedKM);
-
-				addedKM = 0;
-				isLoading = false;
-			}
-			catch
-			{
-				error = true;
-				errorMessage = "Something went wrong, try again";
-				await Task.Delay(TimeSpan.FromSeconds(5));
-				error = false;
-				throw;
-			}
-		}
-	}
-}

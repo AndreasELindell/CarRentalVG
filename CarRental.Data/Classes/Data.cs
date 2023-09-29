@@ -1,6 +1,7 @@
 ﻿using CarRental.Common.Interfaces;
 using CarRental.Common.Models;
 using CarRental.Data.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -53,7 +54,7 @@ public class Data : IData
 			{
 				return list.Where(expression.Compile()).ToList();
 			}
-			catch (Exception)
+			catch
 			{
 				throw;
 			}
@@ -71,9 +72,8 @@ public class Data : IData
 			{
 				return list.SingleOrDefault(expression.Compile());
 			}
-			catch (Exception)
+			catch
 			{
-
 				throw;
 			}
 		}
@@ -82,9 +82,7 @@ public class Data : IData
 	}
 	public void Add<T>(T item)
 	{
-		List<T>? list = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(f => f.FieldType == typeof(List<T>)).GetValue(this) as List<T>;
-		list.Add(item);
-
+		(GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(f => f.FieldType == typeof(List<T>)).GetValue(this) as List<T>).Add(item);
 	}
 	public void CloseBooking(IBooking booking)
 	{
