@@ -5,7 +5,6 @@ namespace CarRental.Common.Interfaces;
 public interface IVehicle
 {
 	public int Id { get; set; }
-	static int NextId;
 	public string? RegNo { get; set; }
 	public string? Make { get; set; }
 	public int Odometer { get; set; }

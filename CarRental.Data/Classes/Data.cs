@@ -61,7 +61,7 @@ public class Data : IData
 		return list;
 
 	}
-	public T? Singel<T>(Expression<Func<T, bool>>? expression)
+	public T? Single<T>(Expression<Func<T, bool>>? expression)
 	{
 		List<T> list = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(f => f.FieldType == typeof(List<T>)).GetValue(this) as List<T>;
 

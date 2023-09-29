@@ -8,4 +8,5 @@ public interface IData
 	public void CloseBooking(IBooking booking);
 	public List<T> Get<T>(Expression<Func<T, bool>>? expression);
 	public void Add<T>(T item);
+	public T? Single<T>(Expression<Func<T, bool>>? expression);
 }

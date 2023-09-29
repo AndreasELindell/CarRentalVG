@@ -26,6 +26,9 @@ public class CarRentalService
 	{
 		return _data.Get<IVehicle>(null);
 	}
+	public IBooking GetBooking(int id) => _data.Single<IBooking>(b => b.Id == id);
+	public IPerson GetPerson(int id) => _data.Single<IPerson>(b => b.Id == id);
+	public IVehicle GetVehicle(int id) => _data.Single<IVehicle>(b => b.Id == id);
 	public async Task RentcarAsync(IVehicle vehicle, int personid)
 	{
 		IPerson? person = _data.Get<IPerson>(null).FirstOrDefault(x => x.Id == personid);

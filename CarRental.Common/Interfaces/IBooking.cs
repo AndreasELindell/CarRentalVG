@@ -5,7 +5,6 @@ namespace CarRental.Common.Interfaces;
 public interface IBooking
 {
 	public int Id { get; set; }
-	static int NextId;
 	public DateTime Start { get; set; }
 	public DateTime End { get; set; }
 	public TimeSpan Duration { get; set; }

@@ -229,25 +229,21 @@
 
 	private async Task FakeDelayRentCar(IVehicle vehicle)
 	{
+		if (customerId < 1)
+		{
+			error = true;
+			errorMessage = "You need a valid customer to rent a car!";
+			await Task.Delay(TimeSpan.FromSeconds(5));
+			error = false;
+		}
 		if (!isLoading)
 		{
-			try
-			{
-				isLoading = true;
-				await Task.Delay(TimeSpan.FromSeconds(5));
-				await service.RentcarAsync(vehicle, customerId);
+			isLoading = true;
+			await Task.Delay(TimeSpan.FromSeconds(5));
+			await service.RentcarAsync(vehicle, customerId);
 
-				customerId = 0;
-				isLoading = false;
-			}
-			catch
-			{
-				error = true;
-				errorMessage = "Something went wrong, try again";
-				await Task.Delay(TimeSpan.FromSeconds(5));
-				error = false;
-				throw;
-			}
+			customerId = 0;
+			isLoading = false;
 		}
 	}
 
@@ -257,6 +253,7 @@
 		{
 			try
 			{
+				isLoading = true;
 				await Task.Delay(TimeSpan.FromSeconds(2));
 				await service.ReturnCarAsync(vehicle, addedKM);
 
@@ -271,7 +268,6 @@
 				error = false;
 				throw;
 			}
-			isLoading = true;
 		}
 	}
 }
