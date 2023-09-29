@@ -64,10 +64,9 @@
 						<td class="col-sm-3">
 							<div class="input-group">
 								<select @bind="customerId" class="form-select form-select-sm" >
-									
 									@foreach (var customer in service.GetPeople())
 									{
-										<option value="@customer.Id">@customer.FirstName @customer.LastName</option>
+										<option selected value="@customer.Id">@customer.FirstName @customer.LastName</option>
 									}
 								</select>
 								<button class="btn-outline-success" @onclick="(() => FakeDelayRentCar(vehicle))">Rent</button>

@@ -1,4 +1,5 @@
 ﻿using CarRental.Common.Enums;
+using CarRental.Common.Extensions;
 using CarRental.Common.Interfaces;
 using CarRental.Common.Models;
 using CarRental.Data.Interfaces;
@@ -48,7 +49,7 @@ public class CarRentalService
 			vehicle.Odometer += addedKM;
 			vehicle.VehicleStatus = VehicleStatuses.Available;
 			booking.End = DateTime.Now;
-			booking.Duration = booking.End - booking.Start;
+			booking.Duration = VehicleExtensions.Duration(booking.Start, booking.End);
 			booking.KMreturned = booking.KMrented + addedKM;
 			booking.Status = BookingStatus.Closed;
 			int costkm = booking.Vehicle.CostKM * addedKM;
