@@ -46,7 +46,7 @@ public class Data : IData
 
 	public List<T> Get<T>(Expression<Func<T, bool>>? expression)
 	{
-		List<T>? list = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(f => f.FieldType == typeof(List<T>)).GetValue(this) as List<T>;
+		var list = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(f => f.FieldType == typeof(List<T>)).GetValue(this) as List<T>;
 
 		if (expression != null)
 		{
@@ -64,7 +64,7 @@ public class Data : IData
 	}
 	public T? Single<T>(Expression<Func<T, bool>>? expression)
 	{
-		List<T> list = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(f => f.FieldType == typeof(List<T>)).GetValue(this) as List<T>;
+		var list = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(f => f.FieldType == typeof(List<T>)).GetValue(this) as List<T>;
 
 		if(expression != null) 
 		{

@@ -62,7 +62,7 @@ public class CarRentalService
 	}
 	public async Task CheckInputAddPerson()
 	{
-		if (!(String.IsNullOrEmpty(newCustomer.FirstName) && String.IsNullOrEmpty(newCustomer.LastName)) && newCustomer.SSN > 0)
+		if (!(String.IsNullOrEmpty(newCustomer.FirstName)) && !(String.IsNullOrEmpty(newCustomer.LastName)) && newCustomer.SSN > 0)
 		{
 			error = false;
 			AddPerson(newCustomer);
@@ -78,7 +78,7 @@ public class CarRentalService
 
 	public async Task CheckInputAddVehicle()
 	{
-		if (!(String.IsNullOrEmpty(RegNo) && String.IsNullOrEmpty(Make)) && CostKM > 0 && CostPerDay > 0)
+		if (!String.IsNullOrEmpty(RegNo) && !String.IsNullOrEmpty(Make) && CostKM > 0 && CostPerDay > 0)
 		{
 			error = false;
 			AddVehicle(RegNo.ToUpper(), Char.ToUpper(Make.First()) + Make.Substring(1).ToLower(), Odometer, CostKM, CostPerDay, type);
@@ -111,8 +111,6 @@ public class CarRentalService
 			isLoading = false;
 		}
 	}
-
-
 	public CarRentalService(IData data)
 	{
 		_data = data;
